@@ -13,9 +13,8 @@ local addonName = "TorghastStats"
 local PHANTASMA_ID_NUMBER = 1728
 local debug = false
 local initiated = false
-local mawratCombat = false
 
-function eventTrigger(self, event, ...)
+local function eventTrigger(self, event, ...)
 
 	local mapID = C_Map.GetBestMapForUnit("player")
 	local zone = C_Map.GetMapInfo(mapID).name
@@ -81,7 +80,7 @@ function eventTrigger(self, event, ...)
 
 end
 
-function login()
+local function login()
 
 	if not PhantasmaData then
 
@@ -99,7 +98,7 @@ function login()
 
 end
 
-function logout()
+local function logout()
 
 	PhantasmaData.TotalPhantasma = PhantasmaData.TotalPhantasma + PhantasmaData.Phantasma
 	PhantasmaData.Phantasma = 0
@@ -108,7 +107,7 @@ function logout()
 
 end
 
-function newPhantasma(currencyType, quantity, quantityChange, quantityGainSource, quantityLostSource)
+local function newPhantasma(currencyType, quantity, quantityChange, quantityGainSource, quantityLostSource)
 
 	if debug then
 
@@ -136,7 +135,7 @@ function newPhantasma(currencyType, quantity, quantityChange, quantityGainSource
 
 end
 
-function newAnimaOrb()
+local function newAnimaOrb()
 
 	PhantasmaData.AnimaOrbs = PhantasmaData.AnimaOrbs + 1
 	--PhantasmaData.AnimaOrbs = math.ceil(PhantasmaData.AnimaOrbs / 2) -- Solves the problem of duplicate anima orb entries
@@ -145,7 +144,7 @@ function newAnimaOrb()
 
 end
 
-function newMawrat()
+local function newMawrat()
 
 	PhantasmaData.Mawrats = PhantasmaData.Mawrats + 1
 
@@ -153,7 +152,7 @@ function newMawrat()
 
 end
 
-function newJarBroken() -- Parameters may be added
+local function newJarBroken() -- Parameters may be added
 
 	-- Might add some code to deal with parameters
 
@@ -163,7 +162,7 @@ function newJarBroken() -- Parameters may be added
 
 end
 
-function newFloorCompleted() -- Parameters may be added
+local function newFloorCompleted() -- Parameters may be added
 
 	-- Might add some code to deal with parameters
 
@@ -173,7 +172,7 @@ function newFloorCompleted() -- Parameters may be added
 
 end
 
-function newDeath()
+local function newDeath()
 
 	PhantasmaData.Deaths = PhantasmaData.Deaths + 1
 
