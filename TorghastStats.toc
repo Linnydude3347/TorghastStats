@@ -1,0 +1,8 @@
+## Interface: 70104
+## Title: |cFF00FF00TorghastStats
+## Notes: A simple addon that tracks various stats in your Torghast Runs.
+## Author: Ben Antonellis
+## Version: 1.0
+## SavedVariables: PhantasmaData
+
+TorghastStats.lua
