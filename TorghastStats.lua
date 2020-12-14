@@ -7,17 +7,15 @@ TorghastStats Addon.
 @date November 26th, 2020
 @license MIT -  See CurseForge / Github
 
+zip -vr TorghastStats.zip TorghastStats/ -x "*.DS_Store"
+
 ]]--
 
 local addonName = "TorghastStats"
 local PHANTASMA_ID_NUMBER = 1728
 local debug = false
-local initiated = false
 
-local function eventTrigger(self, event, ...)
-
-	local mapID = C_Map.GetBestMapForUnit("player")
-	local zone = C_Map.GetMapInfo(mapID).name
+function eventTrigger(self, event, ...)
 
 	-- Check for inital login or UI reload
 	if event == "PLAYER_ENTERING_WORLD" then
@@ -28,21 +26,16 @@ local function eventTrigger(self, event, ...)
 	end
 
 	-- Check for new anima orb
-	if (event == "PLAYER_CHOICE_UPDATE") and (zone == "Torghast") then
+	if (event == "PLAYER_CHOICE_UPDATE") and (C_Map.GetMapInfo(C_Map.GetBestMapForUnit("player")).name == "Torghast") then
 		newAnimaOrb()
 	end
 
-	-- Check for new mawrat
+	-- Check for new mawrat and new jar broken
 	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
 		local _, subevent, _, _, _, _, _, _, destName, _, _ = CombatLogGetCurrentEventInfo()
 		if (subevent == "UNIT_DIED") and (destName == "Mawrat") then
 			newMawrat()
 		end
-	end
-
-	-- Check for new jar broken
-	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		local _, subevent, _, _, _, _, _, _, destName, _, _ = CombatLogGetCurrentEventInfo()
 		if (subevent == "SPELL_AURA_REMOVED") and (destName == "Ashen Phylactery") then
 			newJarBroken()
 		end
@@ -52,18 +45,13 @@ local function eventTrigger(self, event, ...)
 
 
 	-- Check for new death
-	if (event == "PLAYER_DEAD") and (zone == "Torghast") then
+	if (event == "PLAYER_DEAD") and (C_Map.GetMapInfo(C_Map.GetBestMapForUnit("player")).name == "Torghast") then
 		newDeath()
 	end
 
 	-- Check for addon load
 	if event == "ADDON_LOADED" then
-		if (zone == "Torghast") and (not initiated) then
-			print("|cFFC7BF50<|cFF50C79F" .. addonName .. " Loaded!|cFFC7BF50>|r")
-			initiated = true
-		else
-			logout()
-		end
+		logout()
 		PhantasmaData = _G['PhantasmaData']
 	end
 
@@ -80,7 +68,7 @@ local function eventTrigger(self, event, ...)
 
 end
 
-local function login()
+function login()
 
 	if not PhantasmaData then
 
@@ -98,7 +86,7 @@ local function login()
 
 end
 
-local function logout()
+function logout()
 
 	PhantasmaData.TotalPhantasma = PhantasmaData.TotalPhantasma + PhantasmaData.Phantasma
 	PhantasmaData.Phantasma = 0
@@ -107,7 +95,7 @@ local function logout()
 
 end
 
-local function newPhantasma(currencyType, quantity, quantityChange, quantityGainSource, quantityLostSource)
+function newPhantasma(currencyType, quantity, quantityChange, quantityGainSource, quantityLostSource)
 
 	if debug then
 
@@ -135,16 +123,18 @@ local function newPhantasma(currencyType, quantity, quantityChange, quantityGain
 
 end
 
-local function newAnimaOrb()
+function newAnimaOrb()
 
-	PhantasmaData.AnimaOrbs = PhantasmaData.AnimaOrbs + 1
+	-- NEEDS FIXING
+
+	--PhantasmaData.AnimaOrbs = PhantasmaData.AnimaOrbs + 1
 	--PhantasmaData.AnimaOrbs = math.ceil(PhantasmaData.AnimaOrbs / 2) -- Solves the problem of duplicate anima orb entries
 
 	_G['PhantasmaData'] = PhantasmaData
 
 end
 
-local function newMawrat()
+function newMawrat()
 
 	PhantasmaData.Mawrats = PhantasmaData.Mawrats + 1
 
@@ -152,19 +142,21 @@ local function newMawrat()
 
 end
 
-local function newJarBroken() -- Parameters may be added
+function newJarBroken() -- Parameters may be added
 
 	-- Might add some code to deal with parameters
+	-- NEEDS FIXING
 
-	PhantasmaData.JarsBroken = PhantasmaData.JarsBroken + 1
+	--PhantasmaData.JarsBroken = PhantasmaData.JarsBroken + 1
 
 	_G['PhantasmaData'] = PhantasmaData
 
 end
 
-local function newFloorCompleted() -- Parameters may be added
+function newFloorCompleted() -- Parameters may be added
 
 	-- Might add some code to deal with parameters
+	-- NEEDS IMPLEMENTATION
 
 	PhantasmaData.FloorsCompleted = PhantasmaData.FloorsCompleted + 1
 
@@ -172,7 +164,7 @@ local function newFloorCompleted() -- Parameters may be added
 
 end
 
-local function newDeath()
+function newDeath()
 
 	PhantasmaData.Deaths = PhantasmaData.Deaths + 1
 
@@ -180,7 +172,7 @@ local function newDeath()
 
 end
 
-local function torghastCommands(msg, editbox)
+function torghastCommands(msg, editbox)
 
 	if msg == "stats" then
 		PhantasmaStats = _G['PhantasmaData']
@@ -188,7 +180,7 @@ local function torghastCommands(msg, editbox)
 		print("|cFFC7BF50Mawrats Killed: " .. PhantasmaStats.Mawrats)
 		--print("|cFFC7BF50Anima Orbs Collected: " .. PhantasmaStats.AnimaOrbs)
 		--print("|cFFC7BF50Jars Broken: " .. PhantasmaStats.JarsBroken)
-		print("|cFFC7BF50Floors Completed: " .. PhantasmaStats.FloorsCompleted)
+		--print("|cFFC7BF50Floors Completed: " .. PhantasmaStats.FloorsCompleted)
 		print("|cFFC7BF50Deaths: " .. PhantasmaStats.Deaths)
 		print("|cFFFF0000If the stats are not accurate for any reason, /reload.")
 	end
@@ -204,6 +196,10 @@ local function torghastCommands(msg, editbox)
 			Deaths = 0
 		}
 		print("|cFFFF0000Data Reset!")
+	end
+
+	if msg == "loc_DEBUG" then
+		print(C_Map.GetMapInfo(C_Map.GetBestMapForUnit("player")).name)
 	end
 
 end
